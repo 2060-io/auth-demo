@@ -1,0 +1,126 @@
+version: "3"
+services:
+  controller:
+    image: vc-authn-oidc-controller
+    entrypoint: /bin/bash
+    command: >
+      -c "
+      if [ $DEBUGGER ] && [ "$DEBUGGER" == "true" ]; then
+        echo 'Starting in debug mode...'
+        pip install debugpy -t /tmp && \
+        python /tmp/debugpy --wait-for-client --listen 0.0.0.0:5678 -m uvicorn api.main:app --reload --host 0.0.0.0 --port 5000;
+      else
+        echo 'Starting in production mode...'
+        uvicorn api.main:app --reload --host 0.0.0.0 --port 5000;
+      fi"
+    environment:
+      - DEBUGGER=${DEBUGGER}
+      - LOG_LEVEL=${LOG_LEVEL}
+      - LOG_WITH_JSON=${LOG_WITH_JSON}
+      - DB_HOST=${MONGODB_HOST}
+      - DB_PORT=${MONGODB_PORT}
+      - DB_NAME=${MONGODB_NAME}
+      - OIDC_CONTROLLER_DB_USER=${OIDC_CONTROLLER_DB_USER}
+      - OIDC_CONTROLLER_DB_USER_PWD=${OIDC_CONTROLLER_DB_USER_PWD}
+      - CONTROLLER_URL=${CONTROLLER_URL}
+      - CONTROLLER_CAMERA_REDIRECT_URL=${CONTROLLER_CAMERA_REDIRECT_URL}
+      - CONTROLLER_PRESENTATION_EXPIRE_TIME=${CONTROLLER_PRESENTATION_EXPIRE_TIME}
+      - ACAPY_TENANCY=${AGENT_TENANT_MODE}
+      - ACAPY_AGENT_URL=${AGENT_ENDPOINT}
+      - ACAPY_ADMIN_URL=${AGENT_ADMIN_URL}
+      - MT_ACAPY_WALLET_ID=${MT_ACAPY_WALLET_ID}
+      - MT_ACAPY_WALLET_KEY=${MT_ACAPY_WALLET_KEY}
+      - ST_ACAPY_ADMIN_API_KEY=${AGENT_ADMIN_API_KEY}
+      - ST_ACAPY_ADMIN_API_KEY_NAME=${ST_ACAPY_ADMIN_API_KEY_NAME}
+      - USE_OOB_PRESENT_PROOF=${USE_OOB_PRESENT_PROOF}
+      - USE_OOB_LOCAL_DID_SERVICE=${USE_OOB_LOCAL_DID_SERVICE}
+    ports:
+      - ${CONTROLLER_SERVICE_PORT}:5000
+      - 5678:5678
+    volumes:
+      - ../oidc-controller:/app:rw
+    networks:
+      - vc_auth
+
+  controller-db:
+    image: mongo:6.0
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${OIDC_CONTROLLER_DB_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${OIDC_CONTROLLER_DB_USER_PWD}
+      - MONGO_INITDB_DATABASE=${MONGODB_NAME}
+    volumes:
+      - controller-db-data:/data/db
+      - ./mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    ports:
+      - ${MONGODB_PORT}:27017
+    restart: unless-stopped
+    networks:
+      - vc_auth
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:23.0.5
+    command: start-dev --import-realm --http-relative-path=/auth
+    ports:
+      - 8880:8080
+    volumes:
+      - ./keycloak/config:/opt/keycloak/data/import
+      - /home/andresvallecilla/Documentos/git/back/2060-github/auth-2060-theme/login:/opt/keycloak/themes/2060/login
+    environment:
+      KC_APP_HOLOGRAM: "vc-authn"
+      KC_DB: ${KEYCLOAK_DB_VENDOR}
+      KC_DB_URL: jdbc:postgresql://${KEYCLOAK_DB_ADDR}/keycloak
+      # DB_DATABASE: ${KEYCLOAK_DB_NAME}
+      KC_DB_USERNAME: ${KEYCLOAK_DB_USER}
+      KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
+      KEYCLOAK_ADMIN: ${KEYCLOAK_USER}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_PASSWORD}
+      # KEYCLOAK_LOGLEVEL: ${KEYCLOAK_LOGLEVEL}
+      # ROOT_LOGLEVEL: ${KEYCLOAK_ROOT_LOGLEVEL}
+      #
+      # The following parameter addresses a redirect error on logout in later (post KC 16 at least).
+      # It may be fixable by updating the vue app as well -- google "keycloak error Invalid parameter: redirect_uri"
+      KC_SPI_LOGIN_PROTOCOL_OPENID_CONNECT_LEGACY_LOGOUT_REDIRECT_URI: "true"
+    depends_on:
+      - keycloak-db
+    networks:
+      - vc_auth
+
+  keycloak-db:
+    image: postgres:15.1-alpine
+    environment:
+      - POSTGRES_USER=${KEYCLOAK_DB_USER}
+      - POSTGRES_PASSWORD=${KEYCLOAK_DB_PASSWORD}
+      - POSTGRES_DB=${KEYCLOAK_DB_NAME}
+    volumes:
+      - keycloak-db-data:/var/lib/pgsql/data
+    networks:
+      - vc_auth
+
+  service-agent:
+    image: io2060/2060-service-agent:dev
+    environment:
+      - AGENT_LABEL=${AGENT_NAME}
+      - AGENT_ENDPOINT=${AGENT_ENDPOINT}
+      - AGENT_WALLET_ID=oidc_agent_wallet
+      - AGENT_PORT=${AGENT_HTTP_PORT}
+      - ADMIN_PORT=${AGENT_ADMIN_PORT}
+      - AGENT_WALLET_KEY=${WALLET_ENCRYPTION_KEY}
+      - PUBLIC_API_BASE_URL=http://service-agent:${AGENT_HTTP_PORT}
+      - AGENT_LOG_LEVEL=2
+      - ADMIN_LOG_LEVEL=2
+      - EVENTS_BASE_URL=${CONTROLLER_WEB_HOOK_URL}
+    ports:
+      - ${AGENT_ADMIN_PORT}:${AGENT_ADMIN_PORT}
+      - ${AGENT_HTTP_PORT}:${AGENT_HTTP_PORT}
+    networks:
+      - vc_auth
+    volumes:
+      - ./afj:/root/.afj
+
+networks:
+  vc_auth:
+    driver: bridge
+
+volumes:
+  controller-db-data:
+  keycloak-db-data:

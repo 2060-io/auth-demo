@@ -1,0 +1,58 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: vc-auth
+  namespace: demos-dev
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+   # nginx.ingress.kubernetes.io/whitelist-source-range: "198.50.185.225/32"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - vc-auth.dev.2060.io
+        - l.vc-auth.dev.2060.io
+        - a.vc-auth.dev.2060.io
+        - h.vc-auth.dev.2060.io
+      secretName: vc-auth.dev.2060.io-cert
+  rules:
+    - host: vc-auth.dev.2060.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                 name: vc-auth
+                 port:
+                   number: 5000
+    - host: l.vc-auth.dev.2060.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                 name: vc-auth
+                 port:
+                   number: 5678
+    - host: a.vc-auth.dev.2060.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                 name: vc-auth
+                 port:
+                   number: 8077
+    - host: h.vc-auth.dev.2060.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                 name: vc-auth
+                 port:
+                   number: 8030

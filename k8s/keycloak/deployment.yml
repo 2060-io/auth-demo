@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+   name: keycloak
+   namespace: keycloak
+   labels:
+      app: keycloak
+spec:
+   serviceName: "keycloak"
+   replicas: 1
+   selector:
+      matchLabels:
+         app: keycloak
+   template:
+      metadata:
+         labels:
+            app: keycloak
+      spec:
+         initContainers:
+         - name: theme-2060
+           image: io2060/2060-theme:main
+           volumeMounts:
+           - name: themes
+             mountPath: /themes
+           command: ["sh", "-c", "cp -r /app/. /themes/2060"]
+         containers:
+         -  name: keycloak
+            image: quay.io/keycloak/keycloak:23.0.5
+            args: ["start"]
+            env:
+              - name: KEYCLOAK_ADMIN
+                value: "admin"
+              - name: KC_APP_HOLOGRAM
+                value: "vc-authn"
+              - name: KEYCLOAK_ADMIN_PASSWORD
+                value: "password"
+              - name: KC_PROXY
+                value: "edge"
+              - name: KC_DB
+                value: "postgres"
+              - name: KC_DB_USERNAME
+                value: "keycloak"
+              - name: KC_DB_PASSWORD
+                value: "password"
+              - name: KC_DB_URL
+                value: "jdbc:postgresql://localhost/keycloak"
+#              - name: KC_FEATURES
+#                value: """
+              - name: KC_HOSTNAME
+                value: "auth.dev.2060.io"             
+            ports:
+              - name: http
+                containerPort: 8080
+            volumeMounts:
+              - name: themes
+                mountPath: /opt/keycloak/themes
+            readinessProbe:
+              httpGet:
+                path: /realms/master
+                port: 8080    
+         -  name: postgres
+            image: postgres:15.2
+            imagePullPolicy: Always
+            env:
+              - name: POSTGRES_PASSWORD
+                value: "password"
+              - name: POSTGRES_USER
+                value: "keycloak"
+              - name: PGDATA
+                value: "/var/lib/postgresql/data/pgdata"
+            ports:
+              -  containerPort: 5432
+            volumeMounts:
+              - name: keycloak-postgres-pv-main
+                mountPath: /var/lib/postgresql/data
+         volumes:
+           - name: themes
+             emptyDir: {}
+
+   volumeClaimTemplates: 
+   - metadata:
+       name: keycloak-postgres-pv-main
+     spec:
+       accessModes:
+       - "ReadWriteOnce"
+       resources:
+         requests:
+           storage: 1Gi

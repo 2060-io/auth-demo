@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: keycloak
+  namespace: keycloak
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+   # nginx.ingress.kubernetes.io/whitelist-source-range: "198.50.185.225/32"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - auth.dev.2060.io
+      secretName: auth.dev.2060.io-cert
+  rules:
+    - host: auth.dev.2060.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                 name: keycloak
+                 port:
+                   number: 8080

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mongo-init-config
+  namespace: demos-dev
+data:
+  mongo-init.js: |
+    db.createUser({
+      user: "oidccontrolleruser",
+      pwd: "oidccontrollerpass",
+      roles: [
+        {
+          role: "readWrite",
+          db: "oidccontroller",
+        },
+      ],
+    });

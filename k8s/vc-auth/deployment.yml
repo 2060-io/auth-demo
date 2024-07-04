@@ -1,0 +1,162 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+   name: vc-auth
+   namespace: demos-dev
+   labels:
+      app: vc-auth
+spec:
+   serviceName: "vc-auth"
+   replicas: 1
+   selector:
+      matchLabels:
+         app: vc-auth
+   template:
+      metadata:
+         labels:
+            app: vc-auth
+      spec:
+         containers:
+         -  name: vc-auth-sa-container
+            image: io2060/2060-service-agent:dev
+            imagePullPolicy: Always
+            env:
+            - name: AGENT_LABEL
+              value: "VC-AuthN Agent"
+            - name: AGENT_ENDPOINT
+              value: "wss://h.vc-auth.dev.2060.io:443"
+            - name: AGENT_WALLET_ID
+              value: "oidc_agent_wallet"
+            - name: AGENT_PORT
+              value: "8030"
+            - name: ADMIN_PORT
+              value: "8077"
+            - name: AGENT_WALLET_KEY
+              value: "key"
+            - name: PUBLIC_API_BASE_URL
+              value: "https://h.vc-auth.dev.2060.io"
+            - name: AGENT_PUBLIC_DID
+              value: "did:web:h.vc-auth.dev.2060.io"
+            - name: AGENT_LOG_LEVEL
+              value: "4"
+            - name: ADMIN_LOG_LEVEL
+              value: "3"
+            - name: EVENTS_BASE_URL
+              value: "https://vc-auth.dev.2060.io/webhooks"
+            volumeMounts:
+            - name: vc-auth-sa-pv-main
+              mountPath: /root/.afj
+            ports:
+            -  containerPort: 8077
+            -  containerPort: 8030
+         -  name: controller
+            image: io2060/vc-auth-2060:2060
+            imagePullPolicy: Always
+            command: ["/bin/bash", "-c"]
+            args: 
+              - |
+                echo "Waiting for MongoDB to be ready..."
+                until python -c "import pymongo; pymongo.MongoClient('mongodb://localhost:27017').server_info()"; do
+                  sleep 1
+                done
+                echo "MongoDB is ready"
+                if [ "$DEBUGGER" == "true" ]; then
+                  echo 'Starting in debug mode...'
+                  pip install debugpy -t /tmp && \
+                  python /tmp/debugpy --wait-for-client --listen 0.0.0.0:5678 -m uvicorn api.main:app --reload --host 0.0.0.0 --port 5000;
+                else
+                  echo 'Starting in production mode...'
+                  uvicorn api.main:app --reload --host 0.0.0.0 --port 5000;
+                fi
+            env:
+              - name: DEBUGGER
+                value: "false"
+              - name: LOG_LEVEL
+                value: "DEBUG"
+              - name: LOG_WITH_JSON
+                value: "true"
+              - name: DB_HOST
+                value: "localhost"
+              - name: DB_PORT
+                value: "27017"
+              - name: DB_NAME
+                value: "oidccontroller"
+              - name: OIDC_CONTROLLER_DB_USER
+                value: "oidccontrolleruser"
+              - name: OIDC_CONTROLLER_DB_USER_PWD
+                value: "password"
+              - name: CONTROLLER_URL
+                value: "https://vc-auth.dev.2060.io"
+              - name: CONTROLLER_CAMERA_REDIRECT_URL
+                value: "wallet_howto"
+              - name: CONTROLLER_PRESENTATION_EXPIRE_TIME
+                value: "10"
+              - name: ACAPY_TENANCY
+                value: "single"
+              - name: ACAPY_AGENT_URL
+                value: "https://h.vc-auth.dev.2060.io"
+              - name: ACAPY_ADMIN_URL
+                value: "https://a.vc-auth.dev.2060.io"
+              # - name: MT_ACAPY_WALLET_ID
+              #   value: ""
+              - name: MT_ACAPY_WALLET_KEY
+                value: "random-key"
+              - name: ST_ACAPY_ADMIN_API_KEY
+                value: "key"
+              - name: ST_ACAPY_ADMIN_API_KEY_NAME
+                value: "x-api-key"
+              - name: USE_OOB_PRESENT_PROOF
+                value: "false"
+              - name: USE_OOB_LOCAL_DID_SERVICE
+                value: "true"
+              # - name: OIDC_CLIENT_ID
+              #   value: "keycloak"
+              # - name: OIDC_CLIENT_NAME
+              #   value: "keycloak"
+              # - name: OIDC_CLIENT_REDIRECT_URI
+              #   value: "https://auth.dev.2060.io/realms/vc-authn/broker/vc-authn/endpoint"
+              # - name: OIDC_CLIENT_SECRET
+              #   value: "keycloak"
+            ports:
+            -  containerPort: 5000
+            -  containerPort: 5678
+         -  name: controller-db
+            image: mongo:6.0
+            imagePullPolicy: Always
+            env:
+              - name: MONGO_INITDB_ROOT_USERNAME
+                value: "oidccontrolleruser"
+              - name: MONGO_INITDB_ROOT_PASSWORD
+                value: "password"
+              - name: MONGO_INITDB_DATABASE
+                value: "oidccontroller"
+            ports:
+            - containerPort: 27017
+            volumeMounts:
+              - name: vc-auth-mongo-pv-main
+                mountPath: /data/db
+              - name: mongo-init-script
+                mountPath: /docker-entrypoint-initdb.d/
+         volumes:
+         - name: vc-auth-mongo-pv-main
+         - name: "mongo-init-script"
+           configMap:
+             name: mongo-init-config
+
+   volumeClaimTemplates: 
+   - metadata:
+       name: vc-auth-sa-pv-main
+     spec:
+       accessModes:
+       - "ReadWriteOnce"
+       resources:
+         requests:
+           storage: 1Gi
+   - metadata:
+       name: vc-auth-mongo-pv-main
+     spec:
+       accessModes:
+       - "ReadWriteOnce"
+       resources:
+         requests:
+           storage: 1Gi
