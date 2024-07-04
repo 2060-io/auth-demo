@@ -190,7 +190,6 @@ configureEnvironment() {
   if [ ! -z "${AGENT_ADMIN_API_KEY}" ]; then
     AGENT_ADMIN_MODE="admin-api-key ${AGENT_ADMIN_API_KEY}"
   fi
-  export AGENT_WALLET_SEED=${AGENT_WALLET_SEED}
   export MT_ACAPY_WALLET_ID=${MT_ACAPY_WALLET_ID}
   export MT_ACAPY_WALLET_KEY=${MT_ACAPY_WALLET_KEY}
 
@@ -208,13 +207,7 @@ configureEnvironment() {
   export KEYCLOAK_ROOT_LOGLEVEL="WARN"
 
   # wallet-db
-  export WALLET_TYPE="postgres_storage"
   export WALLET_ENCRYPTION_KEY="key"
-  export POSTGRESQL_WALLET_HOST="wallet-db"
-  export POSTGRESQL_WALLET_PORT="5432"
-  export POSTGRESQL_WALLET_DATABASE="wallet_db"
-  export POSTGRESQL_WALLET_USER="walletuser"
-  export POSTGRESQL_WALLET_PASSWORD="walletpassword"
 }
 
 getStartupParams() {
@@ -275,7 +268,6 @@ initializeUserPrompts() {
   fi
   ######
 
-  echo "AGENT_WALLET_SEED=$(generateSeed vc-authn-oidc)" >> .env
   startNgrokContainers
   setNgrokEndpoints
 }

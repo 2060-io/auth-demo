@@ -64,6 +64,7 @@ curl -X 'POST' \
   -d '{
   "ver_config_id": "chatbot",
   "subject_identifier": "",
+  "include_v1_attributes": false,
   "generate_consistent_identifier": true,
   "requested_credentials": [
       {
@@ -75,6 +76,19 @@ curl -X 'POST' \
     ],
 }'
 ```
+
+#### Params
+
+| Name                            | Description                                                                                                                               | Value   |
+| ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| `ver_config_id`                 | String value responsible for identifying the variable `pres_req_conf_id`, which is sent from the frontend to identify the configuration to apply | `chatbot` |
+| `subject_identifier`            | See [here](https://github.com/bcgov/vc-authn-oidc/tree/main/docs#subject-identifer-mapping) for further details.                          |         |
+| `include_v1_attributes`         | Optional field defaulting to false. Boolean value responsible for enabling the independent sending of credential                          |         |
+| `generate_consistent_identifier`| See [here](https://github.com/bcgov/vc-authn-oidc/tree/main/docs#subject-identifer-mapping) for further details.                          |         |
+| `requested_credentials`         | Contains the details on the presentation request                                                                                          |         |
+| `credentialDefinitionId`        | It contains the ID of the credential required for authentication                                                                          |         |
+| `attributes`                    | This is an array containing all the attributes required for the given credential                                                          |         |
+
 
 - The demo application is configured to use Keycloak as AIM system. To register keycloak as a client for VC-AuthN, execute the following command in a shell:
 
