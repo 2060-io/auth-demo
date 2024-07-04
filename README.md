@@ -120,6 +120,7 @@ Demo service for 2060 testing.
 #### Scan the QR code
 
 Click the link for chatbot demo.
+
 ![demo](https://chatbot-demo.dev.2060.io/qr?size=300&bcolor=FFFFFF&balpha=1&fcolor=000000&falpha=1)
 
 #### Accept the Invitation

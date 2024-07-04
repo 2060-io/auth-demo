@@ -1,7 +1,7 @@
 version: "3"
 services:
   controller:
-    image: vc-authn-oidc-controller
+    image: io2060/vc-auth-2060:2060
     entrypoint: /bin/bash
     command: >
       -c "
@@ -38,7 +38,10 @@ services:
       - ${CONTROLLER_SERVICE_PORT}:5000
       - 5678:5678
     volumes:
-      - ../oidc-controller:/app:rw
+      - /home/andresvallecilla/Documentos/git/back/2060-github/auth-2060-theme/vc-auth/assets:/app/api/templates/assets
+      - /home/andresvallecilla/Documentos/git/back/2060-github/auth-2060-theme/vc-auth/verified_credentials.html:/app/api/templates/verified_credentials.html
+    depends_on:
+      - controller-db
     networks:
       - vc_auth
 
