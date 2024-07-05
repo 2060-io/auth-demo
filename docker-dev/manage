@@ -101,20 +101,6 @@ PROD_CONTAINERS="controller"
 # -----------------------------------------------------------------------------------------------------------------
 # Functions:
 # -----------------------------------------------------------------------------------------------------------------
-build-oidc-controller() {
-  #
-  # oidc-controller
-  #
-  echo -e "\nBuilding oidc-controller image..."
-  docker build \
-    -t 'vc-authn-oidc-controller' \
-    -f './oidc-controller/Dockerfile' '..'
-}
-
-buildImages() {
-  build-oidc-controller
-}
-
 configureEnvironment() {
 
   if [ -f .env ]; then
@@ -376,7 +362,6 @@ rm|down)
 build)
   _startupParams=$(getStartupParams $@)
   configureEnvironment $@
-  buildImages
   ;;
 *)
   usage

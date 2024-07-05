@@ -73,7 +73,7 @@ curl -X 'POST' \
           "phoneNumber"
         ]
       }
-    ],
+    ]
 }'
 ```
 
