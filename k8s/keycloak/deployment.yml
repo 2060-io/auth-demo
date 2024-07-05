@@ -22,7 +22,7 @@ spec:
            volumeMounts:
            - name: themes
              mountPath: /themes
-           command: ["sh", "-c", "cp -r /app/. /themes/2060"]
+           command: ["sh", "-c", "cp -r /app/login/. /themes/2060/login"]
          containers:
          -  name: keycloak
             image: quay.io/keycloak/keycloak:23.0.5
