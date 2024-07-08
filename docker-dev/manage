@@ -97,6 +97,7 @@ EOF
 DEFAULT_CONTAINERS="keycloak keycloak-db controller-db"
 ACAPY_CONTAINERS="service-agent"
 PROD_CONTAINERS="controller"
+FRONT_CONTAINERS="frontend"
 
 # -----------------------------------------------------------------------------------------------------------------
 # Functions:
@@ -337,7 +338,7 @@ start|up)
 
   configureEnvironment $@
 
-  docker-compose up -d ${_startupParams} ${DEFAULT_CONTAINERS} ${ACAPY_CONTAINERS} ${PROD_CONTAINERS}
+  docker-compose up -d ${_startupParams} ${DEFAULT_CONTAINERS} ${ACAPY_CONTAINERS} ${PROD_CONTAINERS} ${FRONT_CONTAINERS}
 
   docker-compose logs -f
  ;;

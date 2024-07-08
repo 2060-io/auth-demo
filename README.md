@@ -138,3 +138,7 @@ Go to contextual menu, select `Issue credential` and complete the process by `ac
 <img src="assets/IMG_7722.png" alt="invitation" style="height:500px; border: 1px solid #EEEEEE;"/>
 <img src="assets/IMG_7723.png" alt="invitation" style="height:500px; border: 1px solid #EEEEEE;"/>
 </kbd>
+
+### Frontend used
+The frontend employed is an example available in [2060](https://github.com/2060-io/dashboard-frontend/tree/dev) for the proper implementation and validation of the system. It is important to bear in mind that the frontend dashboard is designed to manage a service deployment in 2060 that is under construction
+

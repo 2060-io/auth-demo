@@ -38,8 +38,10 @@ services:
       - ${CONTROLLER_SERVICE_PORT}:5000
       - 5678:5678
     volumes:
-      - ./theme/vc-auth/assets:/app/api/templates/assets
-      - ./theme/vc-auth/verified_credentials.html:/app/api/templates/verified_credentials.html
+      # - ./theme/vc-auth/assets:/app/api/templates/assets
+      # - ./theme/vc-auth/verified_credentials.html:/app/api/templates/verified_credentials.html
+      - /home/andresvallecilla/Documentos/git/back/2060-github/auth-2060-theme/vc-auth/assets:/app/api/templates/assets
+      - /home/andresvallecilla/Documentos/git/back/2060-github/auth-2060-theme/vc-auth/verified_credentials.html:/app/api/templates/verified_credentials.html
     depends_on:
       - controller-db
       - keycloak_theme
@@ -68,7 +70,8 @@ services:
       - 8880:8080
     volumes:
       - ./keycloak/config:/opt/keycloak/data/import
-      - ./theme/login:/opt/keycloak/themes/2060/login
+      # - ./theme/login:/opt/keycloak/themes/2060/login
+      - /home/andresvallecilla/Documentos/git/back/2060-github/auth-2060-theme/login:/opt/keycloak/themes/2060/login
     environment:
       KC_APP_HOLOGRAM: ""
       KC_DB: ${KEYCLOAK_DB_VENDOR}
@@ -126,6 +129,23 @@ services:
       - vc_auth
     volumes:
       - ./afj:/root/.afj
+
+  frontend:
+    image: io2060/dashboard-frontend:dev
+    environment:
+      - NEXT_PUBLIC_BACKEND_BASE_PATH=
+      - NEXT_PUBLIC_KEYCLOAK_URL=http://localhost:8880/auth/realms/vc-authn
+      - NEXT_PUBLIC_KEYCLOAK_CLIENT_ID=vue-fe
+      - NEXT_PUBLIC_KEYCLOAK_REDIRECT_URI=http://localhost:8080/
+      - NEXT_PUBLIC_KEYCLOAK_POST_LOGOUT_REDIRECT_URI=http://localhost:8080/
+      - NEXT_PUBLIC_KEYCLOAK_PRES_REQ_CONF_ID=chatbot
+      - NEXT_PUBLIC_TEMPLATE_DIR=2060-io/dashboard-templates
+      - NEXT_PUBLIC_TEMPLATE_BRANCH=main
+      - NEXT_PUBLIC_TEMPLATE_SCHEMA_DIR=Fastbot/schema.yml
+    ports:
+      - 8080:3000
+    networks:
+      - vc_auth
 
 networks:
   vc_auth:
