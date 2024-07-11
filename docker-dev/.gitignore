@@ -4,6 +4,7 @@
 *.jwk
 *.rsa
 data/
+theme/
 docker-dev/keycloak/config/hsperfdata_jboss
 
 ######################
