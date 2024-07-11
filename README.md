@@ -62,18 +62,25 @@ curl -X 'POST' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
-  "ver_config_id": "chatbot",
+  "ver_config_id": "phone-number",
   "subject_identifier": "",
-  "include_v1_attributes": false,
   "generate_consistent_identifier": true,
-  "requested_credentials": [
+  "proof_request": {
+    "name": "Chatbot demo phone number",
+    "version": "1.0",
+    "requested_attributes": [
+
       {
-        "credentialDefinitionId": "did:web:chatbot-demo.dev.2060.io?service=anoncreds&relativeRef=/credDef/8TsGLaSPVKPVMXK8APzBRcXZryxutvQuZnnTcDmbqd9p",
-        "attributes": [
-          "phoneNumber"
+        "names": ["phoneNumber"],
+        "restrictions": [
+          {
+            "cred_def_id": "did:web:chatbot-demo.dev.2060.io?service=anoncreds&relativeRef=/credDef/8TsGLaSPVKPVMXK8APzBRcXZryxutvQuZnnTcDmbqd9p"
+          }
         ]
       }
-    ]
+    ],
+    "requested_predicates": []
+  }
 }'
 ```
 
@@ -81,7 +88,7 @@ curl -X 'POST' \
 
 | Name                            | Description                                                                                                                               | Value   |
 | ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ------- |
-| `ver_config_id`                 | String value responsible for identifying the variable `pres_req_conf_id`, which is sent from the frontend to identify the configuration to apply | `chatbot` |
+| `ver_config_id`                 | String value responsible for identifying the variable `pres_req_conf_id`, which is sent from the frontend to identify the configuration to apply | `phone-number` |
 | `subject_identifier`            | See [here](https://github.com/bcgov/vc-authn-oidc/tree/main/docs#subject-identifer-mapping) for further details.                          |         |
 | `include_v1_attributes`         | Optional field defaulting to false. Boolean value responsible for enabling the independent sending of credential                          |         |
 | `generate_consistent_identifier`| See [here](https://github.com/bcgov/vc-authn-oidc/tree/main/docs#subject-identifer-mapping) for further details.                          |         |
@@ -112,6 +119,12 @@ curl -X 'POST' \
   ]
 }'
 ```
+
+### Setup'keycloak theme
+In this exercise, we are utilizing the theme proposed for Keycloak by 2060. It is crucial to ensure that the appropriate parameters are set in Keycloak's environment variables. Two parameters are provided for its proper functioning: the first one, `KC_HOLOGRAM` (recommended), enables the system to detect the associated identity provider for 2060. Additionally, there is an optional parameter named `KC_HOLOGRAM_AUTH` (optional), which allows us to specify the authentication behavior of the identity provider. This parameter is useful in scenarios where disabling email or VC auth might be required, or simply allowing the normal flow if this is not necessary.
+Suggested default values:
+- KC_HOLOGRAM: "vc-authn"
+- KC_HOLOGRAM_AUTH: "vc"
 
 ### Get Chatdemo Credential
 
