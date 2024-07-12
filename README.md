@@ -120,7 +120,7 @@ curl -X 'POST' \
 }'
 ```
 
-### Setup'keycloak theme
+### Setup Keycloak theme
 In this exercise, we are utilizing the theme proposed for Keycloak by 2060. It is crucial to ensure that the appropriate parameters are set in Keycloak's environment variables. Two parameters are provided for its proper functioning: the first one, `KC_HOLOGRAM` (recommended), enables the system to detect the associated identity provider for 2060. Additionally, there is an optional parameter named `KC_HOLOGRAM_AUTH` (optional), which allows us to specify the authentication behavior of the identity provider. This parameter is useful in scenarios where disabling email or VC auth might be required, or simply allowing the normal flow if this is not necessary.
 Suggested default values:
 - KC_HOLOGRAM: "vc-authn"
