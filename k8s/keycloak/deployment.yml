@@ -30,8 +30,10 @@ spec:
             env:
               - name: KEYCLOAK_ADMIN
                 value: "admin"
-              - name: KC_APP_HOLOGRAM
+              - name: KC_HOLOGRAM
                 value: "vc-authn"
+              - name: KC_HOLOGRAM_AUTH
+                value: ""
               - name: KEYCLOAK_ADMIN_PASSWORD
                 value: "password"
               - name: KC_PROXY

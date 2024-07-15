@@ -5,6 +5,7 @@ services:
     entrypoint: /bin/bash
     command: >
       -c "
+      cp -r /app/api/templates/2060/* /app/api/templates/assets &&
       if [ $DEBUGGER ] && [ "$DEBUGGER" == "true" ]; then
         echo 'Starting in debug mode...'
         pip install debugpy -t /tmp && \
@@ -25,6 +26,8 @@ services:
       - CONTROLLER_URL=${CONTROLLER_URL}
       - CONTROLLER_CAMERA_REDIRECT_URL=${CONTROLLER_CAMERA_REDIRECT_URL}
       - CONTROLLER_PRESENTATION_EXPIRE_TIME=${CONTROLLER_PRESENTATION_EXPIRE_TIME}
+      - CONTROLLER_PRESENTATION_CLEANUP_TIME=${CONTROLLER_PRESENTATION_CLEANUP_TIME}
+      - CONTROLLER_SESSION_TIMEOUT_CONFIG_FILE=${CONTROLLER_SESSION_TIMEOUT_CONFIG_FILE}
       - ACAPY_TENANCY=${AGENT_TENANT_MODE}
       - ACAPY_AGENT_URL=${AGENT_ENDPOINT}
       - ACAPY_ADMIN_URL=${AGENT_ADMIN_URL}
@@ -34,14 +37,15 @@ services:
       - ST_ACAPY_ADMIN_API_KEY_NAME=${ST_ACAPY_ADMIN_API_KEY_NAME}
       - USE_OOB_PRESENT_PROOF=${USE_OOB_PRESENT_PROOF}
       - USE_OOB_LOCAL_DID_SERVICE=${USE_OOB_LOCAL_DID_SERVICE}
+      - USE_URL_DEEP_LINK=${USE_URL_DEEP_LINK}
+      - WALLET_DEEP_LINK_PREFIX=${WALLET_DEEP_LINK_PREFIX}
     ports:
       - ${CONTROLLER_SERVICE_PORT}:5000
       - 5678:5678
     volumes:
-      # - ./theme/vc-auth/assets:/app/api/templates/assets
-      # - ./theme/vc-auth/verified_credentials.html:/app/api/templates/verified_credentials.html
-      - /home/andresvallecilla/Documentos/git/back/2060-github/auth-2060-theme/vc-auth/assets:/app/api/templates/assets
-      - /home/andresvallecilla/Documentos/git/back/2060-github/auth-2060-theme/vc-auth/verified_credentials.html:/app/api/templates/verified_credentials.html
+      - ./theme/vc-auth/assets:/app/api/templates/2060
+      - ./theme/vc-auth/verified_credentials.html:/app/api/templates/verified_credentials.html
+      - ./oidc-controller/sessiontimeout.json:/tmp/sessiontimeout.json
     depends_on:
       - controller-db
       - keycloak_theme
@@ -49,7 +53,7 @@ services:
       - vc_auth
 
   controller-db:
-    image: mongo:6.0
+    image: mongo:7.0
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${OIDC_CONTROLLER_DB_USER}
       - MONGO_INITDB_ROOT_PASSWORD=${OIDC_CONTROLLER_DB_USER_PWD}
@@ -70,10 +74,10 @@ services:
       - 8880:8080
     volumes:
       - ./keycloak/config:/opt/keycloak/data/import
-      # - ./theme/login:/opt/keycloak/themes/2060/login
-      - /home/andresvallecilla/Documentos/git/back/2060-github/auth-2060-theme/login:/opt/keycloak/themes/2060/login
+      - ./theme/login:/opt/keycloak/themes/2060/login
     environment:
-      KC_APP_HOLOGRAM: ""
+      KC_HOLOGRAM: "vc-authn"
+      KC_HOLOGRAM_AUTH: ""
       KC_DB: ${KEYCLOAK_DB_VENDOR}
       KC_DB_URL: jdbc:postgresql://${KEYCLOAK_DB_ADDR}/keycloak
       # DB_DATABASE: ${KEYCLOAK_DB_NAME}
@@ -83,6 +87,9 @@ services:
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_PASSWORD}
       # KEYCLOAK_LOGLEVEL: ${KEYCLOAK_LOGLEVEL}
       # ROOT_LOGLEVEL: ${KEYCLOAK_ROOT_LOGLEVEL}
+      #
+      # The following parameter addresses a redirect error on logout in later (post KC 16 at least).
+      # It may be fixable by updating the vue app as well -- google "keycloak error Invalid parameter: redirect_uri"
       KC_SPI_LOGIN_PROTOCOL_OPENID_CONNECT_LEGACY_LOGOUT_REDIRECT_URI: "true"
     depends_on:
       - keycloak-db
@@ -119,8 +126,8 @@ services:
       - ADMIN_PORT=${AGENT_ADMIN_PORT}
       - AGENT_WALLET_KEY=${WALLET_ENCRYPTION_KEY}
       - PUBLIC_API_BASE_URL=http://service-agent:${AGENT_HTTP_PORT}
-      - AGENT_LOG_LEVEL=2
-      - ADMIN_LOG_LEVEL=2
+      - AGENT_LOG_LEVEL=4
+      - ADMIN_LOG_LEVEL=3
       - EVENTS_BASE_URL=${CONTROLLER_WEB_HOOK_URL}
     ports:
       - ${AGENT_ADMIN_PORT}:${AGENT_ADMIN_PORT}
@@ -138,7 +145,7 @@ services:
       - NEXT_PUBLIC_KEYCLOAK_CLIENT_ID=vue-fe
       - NEXT_PUBLIC_KEYCLOAK_REDIRECT_URI=http://localhost:8080/
       - NEXT_PUBLIC_KEYCLOAK_POST_LOGOUT_REDIRECT_URI=http://localhost:8080/
-      - NEXT_PUBLIC_KEYCLOAK_PRES_REQ_CONF_ID=chatbot
+      - NEXT_PUBLIC_KEYCLOAK_PRES_REQ_CONF_ID=phone-number
       - NEXT_PUBLIC_TEMPLATE_DIR=2060-io/dashboard-templates
       - NEXT_PUBLIC_TEMPLATE_BRANCH=main
       - NEXT_PUBLIC_TEMPLATE_SCHEMA_DIR=Fastbot/schema.yml
