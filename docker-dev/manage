@@ -64,11 +64,6 @@ usage() {
     
       Commands:
     
-      build - Build the docker images for the project.
-              You need to do this first.
-    
-                $0 build 
-    
       up -  Creates the application containers from the built images
             and starts the services based on the docker-compose.yml file.
 
@@ -78,6 +73,8 @@ usage() {
               $0 start
 
       start - Same as up.
+
+      example - Create example defaults for quick testing. It is necessary that the start command has completed the creation of the containers.
 
       logs - Display the logs from the docker compose run (ctrl-c to exit).
 
@@ -204,6 +201,10 @@ configureEnvironment() {
 
   # wallet-db
   export WALLET_ENCRYPTION_KEY="key"
+}
+
+setupExample() {
+  sh init-mongo.sh
 }
 
 getStartupParams() {
@@ -351,7 +352,7 @@ start|up)
   if [[ ! -f ".env" ]]; then
     # first/clean run, prompt user selections
     initializeUserPrompts
-    echoWarning "User preferences were saved in docker/.env for future use"
+    echoWarning "User preferences were saved in docker-dev/.env for future use"
   else
     # ngrok was already chosen, refresh containers/endpoints
     echoInfo "Refreshing ngrok containers..."
@@ -369,6 +370,9 @@ logs)
   configureEnvironment $@
   docker-compose logs -f
   ;;
+example)
+  setupExample
+  ;;
 stop)
   configureEnvironment
   docker-compose stop
@@ -382,10 +386,6 @@ rm|down)
 
   configureEnvironment
   deleteVolumes
-  ;;
-build)
-  _startupParams=$(getStartupParams $@)
-  configureEnvironment $@
   ;;
 *)
   usage

@@ -42,8 +42,8 @@ NGROK_AUTHTOKEN=<your token here>
 
 Open a shell in the [docker](docker-dev/) folder and run the following commands:
 
-- `./manage build`: this command will build the controller image. This step is required the first time the project is run, and when dependencies in change in the requirements file(s).
 - `./manage start`: this will start the project. Follow the script prompts to select the appropriate runtime options: they will be saved in an `env` file for the next execution.
+- `./manage example`: this will create the example values ​​in the controller for the example use.
 - To reset everything (including removing container data and selected options in the `env` file) execute `./manage rm`.
 
 A list of all available commands is visible by executing `./manage -h`.
@@ -53,38 +53,9 @@ A list of all available commands is visible by executing `./manage -h`.
 
 In order to use the VC OIDC authentication, a couple of extra steps are required:
 
-- A requested_credentials configuration needs to be registered with VC-AuthN. To do
-  so, the following command can be used to post a configuration requesting a Hologram Wallet chatbot credential:
+**Note**: If you wish to use the default example for quick deployment purposes, please note that you can skip this step by running the `./manage example` command. This will generate the necessary values for proper usage and deployment of this demo. Alternatively, if you prefer to customize the credential to be used and set up your own, please refer to the [following information](https://github.com/bcgov/vc-authn-oidc?tab=readme-ov-file#using-vc-authn).
 
-```bash
-curl -X 'POST' \
-  'http://localhost:5000/ver_configs/' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
-  -d '{
-  "ver_config_id": "phone-number",
-  "subject_identifier": "",
-  "generate_consistent_identifier": true,
-  "proof_request": {
-    "name": "Chatbot demo phone number",
-    "version": "1.0",
-    "requested_attributes": [
-
-      {
-        "names": ["phoneNumber"],
-        "restrictions": [
-          {
-            "cred_def_id": "did:web:chatbot-demo.dev.2060.io?service=anoncreds&relativeRef=/credDef/8TsGLaSPVKPVMXK8APzBRcXZryxutvQuZnnTcDmbqd9p"
-          }
-        ]
-      }
-    ],
-    "requested_predicates": []
-  }
-}'
-```
-
-#### Params
+#### Description of parameters for customization 
 
 | Name                            | Description                                                                                                                               | Value   |
 | ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ------- |
@@ -96,35 +67,13 @@ curl -X 'POST' \
 | `credentialDefinitionId`        | It contains the ID of the credential required for authentication                                                                          |         |
 | `attributes`                    | This is an array containing all the attributes required for the given credential                                                          |         |
 
-
-- The demo application is configured to use Keycloak as AIM system. To register keycloak as a client for VC-AuthN, execute the following command in a shell:
-
-```bash
-curl -X 'POST' \
-  'http://localhost:5000/clients/' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
-  -d '{
-  "client_id": "keycloak",
-  "client_name": "keycloak",
-  "client_secret": "**********",
-  "response_types": [
-    "code",
-    "id_token",
-    "token"
-  ],
-  "token_endpoint_auth_method": "client_secret_basic",
-  "redirect_uris": [
-    "http://localhost:8880/auth/realms/vc-authn/broker/vc-authn/endpoint"
-  ]
-}'
-```
-
 ### Setup Keycloak theme
 In this exercise, we are utilizing the theme proposed for Keycloak by 2060. It is crucial to ensure that the appropriate parameters are set in Keycloak's environment variables. Two parameters are provided for its proper functioning: the first one, `KC_HOLOGRAM` (recommended), enables the system to detect the associated identity provider for 2060. Additionally, there is an optional parameter named `KC_HOLOGRAM_AUTH` (optional), which allows us to specify the authentication behavior of the identity provider. This parameter is useful in scenarios where disabling email or VC auth might be required, or simply allowing the normal flow if this is not necessary.
 Suggested default values:
 - KC_HOLOGRAM: "vc-authn"
-- KC_HOLOGRAM_AUTH: "vc"
+- KC_HOLOGRAM_AUTH: ""
+
+For more information regarding the possible configuration states, please refer to the project [2060-auth-theme](https://github.com/2060-io/auth-2060-theme/tree/dev?tab=readme-ov-file#environment-variables)
 
 ### Get Chatdemo Credential
 
@@ -134,7 +83,7 @@ Demo service for 2060 testing.
 
 Click the link for chatbot demo.
 
-![demo](https://chatbot-demo.dev.2060.io/qr?size=300&bcolor=FFFFFF&balpha=1&fcolor=000000&falpha=1)
+![demo](https://chatbot-demo.dev.2060.io/qr)
 
 #### Accept the Invitation
 <kbd>
