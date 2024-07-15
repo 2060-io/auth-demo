@@ -73,7 +73,7 @@ Suggested default values:
 - KC_HOLOGRAM: "vc-authn"
 - KC_HOLOGRAM_AUTH: ""
 
-For more information regarding the possible configuration states, please refer to the project [2060-auth-theme](https://github.com/2060-io/auth-2060-theme/tree/dev?tab=readme-ov-file#environment-variables)
+For more information regarding the possible configuration states, please refer to the project [2060-auth-theme](https://github.com/2060-io/auth-2060-theme/tree/main?tab=readme-ov-file#environment-variables)
 
 ### Get Chatdemo Credential
 
