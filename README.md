@@ -104,3 +104,12 @@ Go to contextual menu, select `Issue credential` and complete the process by `ac
 ### Frontend used
 The frontend employed is an example available in [2060](https://github.com/2060-io/dashboard-frontend/tree/dev) for the proper implementation and validation of the system. It is important to bear in mind that the frontend dashboard is designed to manage a service deployment in 2060 that is under construction
 
+Finally, to start enjoying the demo, it's important to go to the following URL and click on the 'Log In' button to validate the use of the authentication system provided in this demo.
+```bash
+http://localhost:8080/
+```
+<kbd>
+<img src="assets/IMG_7724.png" alt="invitation" style="height:500px; border: 1px solid #EEEEEE;"/>
+<img src="assets/IMG_7725.png" alt="invitation" style="height:500px; border: 1px solid #EEEEEE;"/>
+<img src="assets/IMG_7726.png" alt="invitation" style="height:500px; border: 1px solid #EEEEEE;"/>
+</kbd>
