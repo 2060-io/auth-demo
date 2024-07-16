@@ -1,7 +1,7 @@
 version: "3"
 services:
   controller:
-    image: io2060/vc-auth-2060:2060
+    image: ghcr.io/bcgov/vc-authn-oidc:sha-14ce368
     entrypoint: /bin/bash
     command: >
       -c "
