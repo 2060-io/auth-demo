@@ -496,7 +496,22 @@
             "user.attribute": "username",
             "id.token.claim": "true",
             "access.token.claim": "true",
-            "claim.name": "phoneNumber",
+            "claim.name": "emailAddress",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "id": "6d7b40d8-93a3-4345-b545-3e6a132cc109",
+          "name": "Email",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "consentRequired": false,
+          "config": {
+            "userinfo.token.claim": "true",
+            "user.attribute": "email",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "emailAddress",
             "jsonType.label": "String"
           }
         },
@@ -1134,9 +1149,22 @@
       "config": {
         "attribute.value": "Username",
         "syncMode": "FORCE",
-        "claim": "phoneNumber",
+        "claim": "emailAddress",
         "user.attribute": "username",
         "attribute": "username"
+      }
+    },
+    {
+      "id": "99a8c4e3-b478-45e0-92af-447ea2bed292",
+      "name": "Email",
+      "identityProviderAlias": "vc-authn",
+      "identityProviderMapper": "oidc-user-attribute-idp-mapper",
+      "config": {
+        "attribute.value": "0ffa20b1",
+        "syncMode": "FORCE",
+        "claim": "emailAddress",
+        "user.attribute": "email",
+        "attribute": "email"
       }
     }
   ],

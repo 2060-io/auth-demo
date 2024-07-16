@@ -37,19 +37,24 @@ if [ "$response" = "[]" ]; then
     -H 'accept: application/json' \
     -H 'Content-Type: application/json' \
     -d '{
-      "ver_config_id": "phone-number",
+      "ver_config_id": "email",
       "subject_identifier": "",
       "generate_consistent_identifier": true,
       "include_v1_attributes": true,
       "proof_request": {
-        "name": "Chatbot demo phone number",
+        "name": "Chatbot demo email",
         "version": "1.0",
         "requested_attributes": [
           {
-            "names": ["phoneNumber"],
+            "names": [
+              "emailAddress",
+              "verifiedTs",
+              "type",
+              "issuedTs"
+            ],
             "restrictions": [
               {
-                "cred_def_id": "did:web:chatbot-demo.dev.2060.io?service=anoncreds&relativeRef=/credDef/8TsGLaSPVKPVMXK8APzBRcXZryxutvQuZnnTcDmbqd9p"
+                "cred_def_id": "did:web:em-vs.demos.2060.io?service=anoncreds&relativeRef=/credDef/FPeqZSubu4rYS55Z7uKhW3qUqv2n46u7eVozKNqKAmDX"
               }
             ]
           }

@@ -59,7 +59,7 @@ In order to use the VC OIDC authentication, a couple of extra steps are required
 
 | Name                            | Description                                                                                                                               | Value   |
 | ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ------- |
-| `ver_config_id`                 | String value responsible for identifying the variable `pres_req_conf_id`, which is sent from the frontend to identify the configuration to apply | `phone-number` |
+| `ver_config_id`                 | String value responsible for identifying the variable `pres_req_conf_id`, which is sent from the frontend to identify the configuration to apply | `email` |
 | `subject_identifier`            | See [here](https://github.com/bcgov/vc-authn-oidc/tree/main/docs#subject-identifer-mapping) for further details.                          |         |
 | `include_v1_attributes`         | Optional field defaulting to false. Boolean value responsible for enabling the independent sending of credential                          |         |
 | `generate_consistent_identifier`| See [here](https://github.com/bcgov/vc-authn-oidc/tree/main/docs#subject-identifer-mapping) for further details.                          |         |
@@ -83,22 +83,20 @@ Demo service for 2060 testing.
 
 Click the link for chatbot demo.
 
-![demo](https://chatbot-demo.dev.2060.io/qr)
+![demo](https://em-vs.demos.2060.io/qr)
 
 #### Accept the Invitation
 <kbd>
 <img src="assets/IMG_7719.png" alt="invitation" border:"1" style="height:500px; border: 1px solid #EEEEEE;"/>
-<img src="assets/IMG_7720.png" alt="invitation" style="height:500px; border: 1px solid #EEEEEE;"/>
 </kbd>
 
 #### Create the Credential
 
-Go to contextual menu, select `Issue credential` and complete the process by `accept` the offered credential.
+Go to contextual menu, select `New Email Address` and complete the process by `accept` the offered credential.
 
 <kbd>
+<img src="assets/IMG_7720.png" alt="invitation" style="height:500px; border: 1px solid #EEEEEE;"/>
 <img src="assets/IMG_7721.png" alt="invitation" style="height:500px; border: 1px solid #EEEEEE;"/>
-<img src="assets/IMG_7722.png" alt="invitation" style="height:500px; border: 1px solid #EEEEEE;"/>
-<img src="assets/IMG_7723.png" alt="invitation" style="height:500px; border: 1px solid #EEEEEE;"/>
 </kbd>
 
 ### Frontend used
@@ -109,7 +107,28 @@ Finally, to start enjoying the demo, it's important to go to the following URL a
 http://localhost:8080/
 ```
 <kbd>
-<img src="assets/IMG_7724.png" alt="invitation" style="height:500px; border: 1px solid #EEEEEE;"/>
+<img src="assets/IMG_7722.png" alt="invitation" style="height:300px; width:300px; border: 1px solid #EEEEEE;"/>
+<img src="assets/IMG_7723.png" alt="invitation" style="height:300px; width:300px; border: 1px solid #EEEEEE;"/>
+<img src="assets/IMG_7724.png" alt="invitation" style="height:300px; width:300px; border: 1px solid #EEEEEE;"/>
+</kbd>
+
+Once the selected authentication method is QR validation, you should go to the `Scan` section presented in the app. This will allow the QR code to be scanned and validated to verify the user's credential. Keep in mind that the system allows you to select from various credentials that meet the required criteria if you have more than one credential.
+
+<kbd>
 <img src="assets/IMG_7725.png" alt="invitation" style="height:500px; border: 1px solid #EEEEEE;"/>
 <img src="assets/IMG_7726.png" alt="invitation" style="height:500px; border: 1px solid #EEEEEE;"/>
+</kbd>
+
+The process will continue on the website where you are authenticating. The system will prompt you to complete the user creation details. In this case, it will automatically retrieve data from the credential to populate the system, and you will only need to fill in the fields for your `first name` and `last name`
+
+<kbd>
+<img src="assets/IMG_7727.png" alt="invitation" style="height:300px; width:300px; border: 1px solid #EEEEEE;"/>
+<img src="assets/IMG_7728.png" alt="invitation" style="height:300px; width:300px; border: 1px solid #EEEEEE;"/>
+</kbd>
+
+Finally, you can validate the created user by accessing Keycloak using the URL `http://localhost:8880/auth/`. There, you can log into the system using the appropriate authentication credentials (by default, `admin` is configured for both `username` and `password`). Select the realm `vc-atuhn`, and under the user section, you will be able to observe the newly created user.
+
+<kbd>
+<img src="assets/IMG_7729.png" alt="invitation" style="height:300px; width:300px; border: 1px solid #EEEEEE;"/>
+<img src="assets/IMG_7730.png" alt="invitation" style="height:300px; width:300px; border: 1px solid #EEEEEE;"/>
 </kbd>
