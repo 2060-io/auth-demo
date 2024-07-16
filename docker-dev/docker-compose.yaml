@@ -43,8 +43,8 @@ services:
       - ${CONTROLLER_SERVICE_PORT}:5000
       - 5678:5678
     volumes:
-      - ./theme/vc-auth/assets:/app/api/templates/2060
-      - ./theme/vc-auth/verified_credentials.html:/app/api/templates/verified_credentials.html
+      - /home/andresvallecilla/Documentos/git/back/2060-github/auth-2060-theme/vc-auth/assets:/app/api/templates/2060
+      - /home/andresvallecilla/Documentos/git/back/2060-github/auth-2060-theme/vc-auth/verified_credentials.html:/app/api/templates/verified_credentials.html
       - ./oidc-controller/sessiontimeout.json:/tmp/sessiontimeout.json
     depends_on:
       - controller-db
@@ -74,7 +74,7 @@ services:
       - 8880:8080
     volumes:
       - ./keycloak/config:/opt/keycloak/data/import
-      - ./theme/login:/opt/keycloak/themes/2060/login
+      - /home/andresvallecilla/Documentos/git/back/2060-github/auth-2060-theme/login:/opt/keycloak/themes/2060/login
     environment:
       KC_HOLOGRAM: "vc-authn"
       KC_HOLOGRAM_AUTH: ""
@@ -145,7 +145,7 @@ services:
       - NEXT_PUBLIC_KEYCLOAK_CLIENT_ID=vue-fe
       - NEXT_PUBLIC_KEYCLOAK_REDIRECT_URI=http://localhost:8080/
       - NEXT_PUBLIC_KEYCLOAK_POST_LOGOUT_REDIRECT_URI=http://localhost:8080/
-      - NEXT_PUBLIC_KEYCLOAK_PRES_REQ_CONF_ID=phone-number
+      - NEXT_PUBLIC_KEYCLOAK_PRES_REQ_CONF_ID=email
       - NEXT_PUBLIC_TEMPLATE_DIR=2060-io/dashboard-templates
       - NEXT_PUBLIC_TEMPLATE_BRANCH=main
       - NEXT_PUBLIC_TEMPLATE_SCHEMA_DIR=Fastbot/schema.yml
