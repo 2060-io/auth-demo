@@ -43,8 +43,8 @@ services:
       - ${CONTROLLER_SERVICE_PORT}:5000
       - 5678:5678
     volumes:
-      - /home/andresvallecilla/Documentos/git/back/2060-github/auth-2060-theme/vc-auth/assets:/app/api/templates/2060
-      - /home/andresvallecilla/Documentos/git/back/2060-github/auth-2060-theme/vc-auth/verified_credentials.html:/app/api/templates/verified_credentials.html
+      - ./theme/vc-auth/assets:/app/api/templates/2060
+      - ./theme/vc-auth/verified_credentials.html:/app/api/templates/verified_credentials.html
       - ./oidc-controller/sessiontimeout.json:/tmp/sessiontimeout.json
     depends_on:
       - controller-db
@@ -74,7 +74,7 @@ services:
       - 8880:8080
     volumes:
       - ./keycloak/config:/opt/keycloak/data/import
-      - /home/andresvallecilla/Documentos/git/back/2060-github/auth-2060-theme/login:/opt/keycloak/themes/2060/login
+      - ./theme/login:/opt/keycloak/themes/2060/login
     environment:
       KC_HOLOGRAM: "vc-authn"
       KC_HOLOGRAM_AUTH: ""
