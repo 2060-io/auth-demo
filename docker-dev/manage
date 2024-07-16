@@ -148,8 +148,6 @@ configureEnvironment() {
   if [ ! -z "${CONTROLLER_API_KEY}" ]; then
     CONTROLLER_WEB_HOOK_URL="${CONTROLLER_WEB_HOOK_URL}#${CONTROLLER_API_KEY}"
   fi
-  export ST_ACAPY_ADMIN_API_KEY_NAME="x-api-key"
-
   # The redirect url can be a web link or the name of a template
   export CONTROLLER_CAMERA_REDIRECT_URL="wallet_howto"
 
@@ -165,26 +163,18 @@ configureEnvironment() {
 
   #controller app settings
   export SET_NON_REVOKED="True"
-  export USE_OOB_PRESENT_PROOF=${USE_OOB_PRESENT_PROOF:-"true"}
-  export USE_OOB_LOCAL_DID_SERVICE=${USE_OOB_LOCAL_DID_SERVICE:-"false"}
-  export USE_URL_DEEP_LINK=${USE_URL_DEEP_LINK:-"false"}
+  export USE_OOB_PRESENT_PROOF=${USE_OOB_PRESENT_PROOF:-"false"}
+  export USE_OOB_LOCAL_DID_SERVICE=${USE_OOB_LOCAL_DID_SERVICE:-"true"}
+  export USE_URL_DEEP_LINK=${USE_URL_DEEP_LINK:-"true"}
   export WALLET_DEEP_LINK_PREFIX=${WALLET_DEEP_LINK_PREFIX:-"didcomm://aries_proof-request"}
 
   # agent
-  export AGENT_TENANT_MODE="${AGENT_TENANT_MODE:-single}"
   export AGENT_HOST=${AGENT_HOST:-service-agent}
   export AGENT_NAME="VC-AuthN Agent"
   export AGENT_HTTP_PORT=${AGENT_HTTP_PORT:-8030}
   export AGENT_ADMIN_PORT=${AGENT_ADMIN_PORT:-"8077"}
   export AGENT_ADMIN_URL=${AGENT_ADMIN_URL:-http://$AGENT_HOST:$AGENT_ADMIN_PORT}/v1/vc-authn
   export AGENT_ENDPOINT=${AGENT_ENDPOINT:-http://$AGENT_HOST:$AGENT_HTTP_PORT}
-  export AGENT_ADMIN_API_KEY=${AGENT_ADMIN_API_KEY}
-  export AGENT_ADMIN_MODE="admin-insecure-mode"
-  if [ ! -z "${AGENT_ADMIN_API_KEY}" ]; then
-    AGENT_ADMIN_MODE="admin-api-key ${AGENT_ADMIN_API_KEY}"
-  fi
-  export MT_ACAPY_WALLET_ID=${MT_ACAPY_WALLET_ID}
-  export MT_ACAPY_WALLET_KEY=${MT_ACAPY_WALLET_KEY}
 
   # keycloak-db
   export KEYCLOAK_DB_NAME="keycloak"
