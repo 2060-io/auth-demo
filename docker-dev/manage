@@ -74,8 +74,6 @@ usage() {
 
       start - Same as up.
 
-      example - Create example defaults for quick testing. It is necessary that the start command has completed the creation of the containers.
-
       logs - Display the logs from the docker compose run (ctrl-c to exit).
 
       stop - Stops the services.  This is a non-destructive process.  The volumes and containers
@@ -203,7 +201,7 @@ configureEnvironment() {
   export WALLET_ENCRYPTION_KEY="key"
 }
 
-setupExample() {
+controllerInitConfig() {
   sh init-mongo.sh
 }
 
@@ -364,14 +362,15 @@ start|up)
 
   docker-compose up -d ${_startupParams} ${DEFAULT_CONTAINERS} ${ACAPY_CONTAINERS} ${PROD_CONTAINERS} ${FRONT_CONTAINERS}
 
+  sleep 5
+
+  controllerInitConfig
+
   docker-compose logs -f
  ;;
 logs)
   configureEnvironment $@
   docker-compose logs -f
-  ;;
-example)
-  setupExample
   ;;
 stop)
   configureEnvironment

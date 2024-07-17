@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Check existing value
 response=$(curl -s 'http://localhost:5000/clients/')
 
 if [ "$response" = "[]" ]; then
@@ -28,6 +29,7 @@ else
   echo "The array is not empty. No POST performed."
 fi
 
+# Check existing value
 response=$(curl -s 'http://localhost:5000/ver_configs/')
 
 if [ "$response" = "[]" ]; then
