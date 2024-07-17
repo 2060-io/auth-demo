@@ -364,6 +364,8 @@ start|up)
 
   docker-compose up -d ${_startupParams} ${DEFAULT_CONTAINERS} ${ACAPY_CONTAINERS} ${PROD_CONTAINERS} ${FRONT_CONTAINERS}
 
+  setupExample
+
   docker-compose logs -f
  ;;
 logs)

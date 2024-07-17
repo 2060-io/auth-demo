@@ -44,6 +44,7 @@ Open a shell in the [docker](docker-dev/) folder and run the following commands:
 
 - `./manage start`: this will start the project. Follow the script prompts to select the appropriate runtime options: they will be saved in an `env` file for the next execution.
 - `./manage example`: this will create the example values ​​in the controller for the example use.
+**Note**:By default, you don't need to execute this command as the example will create the necessary default values. If you want to customize the credentials, you can edit the init-mongo.sh file and then execute the command `./manage example`.
 - To reset everything (including removing container data and selected options in the `env` file) execute `./manage rm`.
 
 A list of all available commands is visible by executing `./manage -h`.
