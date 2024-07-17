@@ -69,7 +69,7 @@ services:
 
   keycloak:
     image: quay.io/keycloak/keycloak:23.0.5
-    command: start-dev --import-realm --http-relative-path=/auth
+    command: start-dev --import-realm --http-relative-path=/auth --features=preview
     ports:
       - 8880:8080
     volumes:
