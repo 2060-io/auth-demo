@@ -43,8 +43,6 @@ NGROK_AUTHTOKEN=<your token here>
 Open a shell in the [docker](docker-dev/) folder and run the following commands:
 
 - `./manage start`: this will start the project. Follow the script prompts to select the appropriate runtime options: they will be saved in an `env` file for the next execution.
-- `./manage example`: this will create the example values ​​in the controller for the example use.
-**Note**:By default, you don't need to execute this command as the example will create the necessary default values. If you want to customize the credentials, you can edit the init-mongo.sh file and then execute the command `./manage example`.
 - To reset everything (including removing container data and selected options in the `env` file) execute `./manage rm`.
 
 A list of all available commands is visible by executing `./manage -h`.
@@ -54,7 +52,7 @@ A list of all available commands is visible by executing `./manage -h`.
 
 In order to use the VC OIDC authentication, a couple of extra steps are required:
 
-**Note**: If you wish to use the default example for quick deployment purposes, please note that you can skip this step by running the `./manage example` command. This will generate the necessary values for proper usage and deployment of this demo. Alternatively, if you prefer to customize the credential to be used and set up your own, please refer to the [following information](https://github.com/bcgov/vc-authn-oidc?tab=readme-ov-file#using-vc-authn).
+**Note**: If you wish to use the default example for quick deployment purposes, please note that by default, the system is creating default values in order to validate the demo when using the command `./manage start`. This will generate the necessary values for proper usage and deployment of this demo. Alternatively, if you prefer to customize the credential to be used and set up your own, please refer to the [following information](https://github.com/bcgov/vc-authn-oidc?tab=readme-ov-file#using-vc-authn).
 
 #### Description of parameters for customization 
 

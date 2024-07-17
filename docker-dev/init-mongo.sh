@@ -1,11 +1,5 @@
 #!/bin/bash
 
-sleep 4s
-# Perform DELETE request
-curl -X 'DELETE' \
-  'http://localhost:5000/clients/keycloak' \
-  -H 'accept: application/json'
-
 # Check existing value
 response=$(curl -s 'http://localhost:5000/clients/')
 
@@ -34,11 +28,6 @@ if [ "$response" = "[]" ]; then
 else
   echo "The array is not empty. No POST performed."
 fi
-
-# Perform DELETE request
-curl -X 'DELETE' \
-  'http://localhost:5000/ver_configs/email' \
-  -H 'accept: application/json'
 
 # Check existing value
 response=$(curl -s 'http://localhost:5000/ver_configs/')
